@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ValMessagesComponent } from './val-messages.component';
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { ValidationMessagesConfiguration } from '../validation-messages-configuration';
 import { AngularValidationMessagesModuleConfiguration } from '../angular-validation-messages-module-configuration';
@@ -64,9 +64,47 @@ describe('ValMessagesComponent', () => {
     expect(validationMessagesConfiguration.displayWhen).toHaveBeenCalled();
   });
 
-  describe(`when the 'on' attribute is provided`, () => {
+  describe(`when the 'when' attribute is provided`, () => {
     it(`it overrides the global display configuration`, () => {
+      @Component({
+        template: `
+          <val-messages [for]="control" [when]="control.touched">
+            <val-message default>A default validation message.</val-message>
+          </val-messages>`
+      })
+      class TestHostComponent {
+        @ViewChild(ValMessagesComponent) validationMessageComponent: ValMessagesComponent;
+        control: FormControl = new FormControl(null, [Validators.required]);
 
+        touchControl() {
+          this.control.markAsTouched();
+        }
+      }
+
+      const validationMessagesConfiguration: ValidationMessagesConfiguration = {
+        displayWhen: (control, formSubmitted) => true
+      };
+      const configuration: AngularValidationMessagesModuleConfiguration = {
+        validationMessages: validationMessagesConfiguration
+      };
+
+      spyOn(validationMessagesConfiguration, 'displayWhen').and.callThrough();
+
+      TestBed.configureTestingModule({
+        imports: [AngularValidationMessagesModule.forRoot(configuration)],
+        declarations: [TestHostComponent],
+      });
+
+      const fixture: ComponentFixture<TestHostComponent> = TestBed.createComponent(TestHostComponent);
+
+      fixture.detectChanges();
+      expect(fixture.componentInstance.validationMessageComponent.showErrors()).toEqual(false);
+
+      fixture.componentInstance.touchControl();
+      fixture.detectChanges();
+
+      expect(fixture.componentInstance.validationMessageComponent.showErrors()).toEqual(true);
+      expect(validationMessagesConfiguration.displayWhen).not.toHaveBeenCalled();
     });
 
     it('the component is shown when the expression returns true', () => {

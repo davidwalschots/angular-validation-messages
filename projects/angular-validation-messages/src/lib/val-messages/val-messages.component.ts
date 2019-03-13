@@ -12,6 +12,7 @@ import { ValidationMessagesConfiguration } from '../validation-messages-configur
 })
 export class ValMessagesComponent implements OnInit {
   _for: FormControl;
+  _displayWhen: boolean | undefined;
 
   constructor(@Optional() private controlContainer: ControlContainer,
     @Optional() @Inject(AngularValidationMessagesModuleConfigurationToken)
@@ -29,7 +30,16 @@ export class ValMessagesComponent implements OnInit {
     this._for = typeof control === 'string' ? getFormControlFromContainer(control, this.controlContainer) : control;
   }
 
+  @Input()
+  set when(display: boolean) {
+    this._displayWhen = typeof display === 'boolean' ? display : undefined;
+  }
+
   showErrors() {
+    if (this._displayWhen !== undefined) {
+      return this._displayWhen;
+    }
+
     // TODO: Implement form submitted.
     return this.getConfiguration().displayWhen(this._for, false);
   }
