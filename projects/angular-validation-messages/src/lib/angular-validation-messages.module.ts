@@ -1,6 +1,6 @@
 import { NgModule, ModuleWithProviders } from '@angular/core';
-import { ValMessagesComponent } from './val-messages.component';
-import { ValMessageComponent } from './val-message.component';
+import { ValMessagesComponent } from './val-messages/val-messages.component';
+import { ValMessageComponent } from './val-message/val-message.component';
 import { AngularValidationMessagesModuleConfiguration } from './angular-validation-messages-module-configuration';
 import { AngularValidationMessagesModuleConfigurationToken } from './angular-validation-messages-module-configuration-token';
 import { CommonModule } from '@angular/common';

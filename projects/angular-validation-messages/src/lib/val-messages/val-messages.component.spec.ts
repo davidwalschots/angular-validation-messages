@@ -3,9 +3,9 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ValMessagesComponent } from './val-messages.component';
 import { Component } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { ValidationMessagesConfiguration } from './validation-messages-configuration';
-import { AngularValidationMessagesModuleConfiguration } from './angular-validation-messages-module-configuration';
-import { AngularValidationMessagesModule } from './angular-validation-messages.module';
+import { ValidationMessagesConfiguration } from '../validation-messages-configuration';
+import { AngularValidationMessagesModuleConfiguration } from '../angular-validation-messages-module-configuration';
+import { AngularValidationMessagesModule } from '../angular-validation-messages.module';
 
 describe('ValMessagesComponent', () => {
   // let component: ValMessagesComponent;

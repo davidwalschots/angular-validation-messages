@@ -1,9 +1,9 @@
 import { Component, OnInit, Input, Optional, Inject } from '@angular/core';
 import { FormControl, ControlContainer } from '@angular/forms';
-import { AngularValidationMessagesModuleConfigurationToken } from './angular-validation-messages-module-configuration-token';
-import { AngularValidationMessagesModuleConfiguration } from './angular-validation-messages-module-configuration';
-import { getFormControlFromContainer } from './get-form-control-from-container';
-import { ValidationMessagesConfiguration } from './validation-messages-configuration';
+import { AngularValidationMessagesModuleConfigurationToken } from '../angular-validation-messages-module-configuration-token';
+import { AngularValidationMessagesModuleConfiguration } from '../angular-validation-messages-module-configuration';
+import { getFormControlFromContainer } from '../get-form-control-from-container';
+import { ValidationMessagesConfiguration } from '../validation-messages-configuration';
 
 @Component({
   selector: 'val-messages',
