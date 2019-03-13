@@ -6,6 +6,6 @@ export class AppPage {
   }
 
   getTitleText() {
-    return element(by.css('avm-root h1')).getText();
+    return element(by.css('avmd-root h1')).getText();
   }
 }

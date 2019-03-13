@@ -17,6 +17,14 @@
     "lib": [
       "es2018",
       "dom"
-    ]
+    ],
+    "paths": {
+      "angular-validation-messages": [
+        "dist/angular-validation-messages"
+      ],
+      "angular-validation-messages/*": [
+        "dist/angular-validation-messages/*"
+      ]
+    }
   }
 }

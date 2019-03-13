@@ -20,16 +20,16 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have as title 'angular-validation-messages'`, () => {
+  it(`should have as title 'angular-validation-messages-demo'`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.debugElement.componentInstance;
-    expect(app.title).toEqual('angular-validation-messages');
+    expect(app.title).toEqual('angular-validation-messages-demo');
   });
 
   it('should render title in a h1 tag', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('h1').textContent).toContain('Welcome to angular-validation-messages!');
+    expect(compiled.querySelector('h1').textContent).toContain('Welcome to angular-validation-messages-demo!');
   });
 });
