@@ -29,8 +29,53 @@ describe('ValMessagesComponent', () => {
   //   expect(component).toBeTruthy();
   // });
 
-  it('when no display configuration is provided, a default setting is used', () => {
+  describe('when the default display configuration is used', () => {
+    @Component({
+      template: `
+        <val-messages [for]="control">
+          <val-message default>A default validation message.</val-message>
+        </val-messages>`
+    })
+    class TestHostComponent {
+      @ViewChild(ValMessagesComponent) validationMessageComponent: ValMessagesComponent;
+      control: FormControl = new FormControl(null, [Validators.required]);
 
+      touchControl() {
+        this.control.markAsTouched();
+      }
+    }
+
+    let component: ValMessagesComponent;
+    let fixture: ComponentFixture<TestHostComponent>;
+
+    beforeEach(async(() => {
+      TestBed.configureTestingModule({
+        imports: [AngularValidationMessagesModule],
+        declarations: [TestHostComponent],
+      })
+      .compileComponents();
+    }));
+
+    beforeEach(() => {
+      fixture = TestBed.createComponent(TestHostComponent);
+      component = fixture.componentInstance.validationMessageComponent;
+      fixture.detectChanges();
+    });
+
+    it('and no control was touched, nor a form submitted, validation messages are not shown', () => {
+      expect(component.showErrors()).toEqual(false);
+    });
+
+    it('and a control is touched, validation messages are shown', () => {
+      fixture.componentInstance.touchControl();
+      fixture.detectChanges();
+
+      expect(component.showErrors()).toEqual(true);
+    });
+
+    it('and the form was submitted, validation messages are shown', () => {
+
+    });
   });
 
   it('when display configuration is provided, it is used instead of the default', () => {

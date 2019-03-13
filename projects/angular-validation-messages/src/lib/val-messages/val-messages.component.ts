@@ -11,6 +11,10 @@ import { ValidationMessagesConfiguration } from '../validation-messages-configur
   styles: []
 })
 export class ValMessagesComponent implements OnInit {
+  private defaultConfiguration: ValidationMessagesConfiguration = {
+    displayWhen: (control, formSubmitted) => control.touched || formSubmitted
+  };
+
   _for: FormControl;
   _displayWhen: boolean | undefined;
 
@@ -45,6 +49,10 @@ export class ValMessagesComponent implements OnInit {
   }
 
   private getConfiguration(): ValidationMessagesConfiguration {
-    return this.configuration.validationMessages;
+    if (this.configuration && this.configuration.validationMessages) {
+      return this.configuration.validationMessages;
+    }
+
+    return this.defaultConfiguration;
   }
 }
