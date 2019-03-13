@@ -6,6 +6,7 @@ import { FormControl, Validators } from '@angular/forms';
 import { ValidationMessagesConfiguration } from '../validation-messages-configuration';
 import { AngularValidationMessagesModuleConfiguration } from '../angular-validation-messages-module-configuration';
 import { AngularValidationMessagesModule } from '../angular-validation-messages.module';
+import { config } from 'rxjs';
 
 describe('ValMessagesComponent', () => {
   // let component: ValMessagesComponent;
@@ -35,23 +36,15 @@ describe('ValMessagesComponent', () => {
   it('when display configuration is provided, it is used instead of the default', () => {
     @Component({
       template: `
-        <val-messages [for]="firstNameControl">
+        <val-messages [for]="control">
           <val-message default>A default validation message.</val-message>
         </val-messages>`
     })
     class TestHostComponent {
-      firstNameControl: FormControl = new FormControl(null, [Validators.required]);
+      control: FormControl = new FormControl(null, [Validators.required]);
     }
 
-    const validationMessagesConfiguration: ValidationMessagesConfiguration = {
-      displayWhen: (control, formSubmitted) => true
-    };
-    const configuration: AngularValidationMessagesModuleConfiguration = {
-      validationMessages: validationMessagesConfiguration
-    };
-
-    spyOn(validationMessagesConfiguration, 'displayWhen').and.callThrough();
-
+    const configuration = getDefaultModuleConfigurationWithSpy();
     TestBed.configureTestingModule({
       imports: [AngularValidationMessagesModule.forRoot(configuration)],
       declarations: [TestHostComponent],
@@ -59,9 +52,8 @@ describe('ValMessagesComponent', () => {
 
     const fixture: ComponentFixture<TestHostComponent> = TestBed.createComponent(TestHostComponent);
 
-    expect(validationMessagesConfiguration.displayWhen).not.toHaveBeenCalled();
     fixture.detectChanges();
-    expect(validationMessagesConfiguration.displayWhen).toHaveBeenCalled();
+    expect(configuration.validationMessages.displayWhen).toHaveBeenCalled();
   });
 
   describe(`when the 'when' attribute is provided`, () => {
@@ -81,15 +73,7 @@ describe('ValMessagesComponent', () => {
         }
       }
 
-      const validationMessagesConfiguration: ValidationMessagesConfiguration = {
-        displayWhen: (control, formSubmitted) => true
-      };
-      const configuration: AngularValidationMessagesModuleConfiguration = {
-        validationMessages: validationMessagesConfiguration
-      };
-
-      spyOn(validationMessagesConfiguration, 'displayWhen').and.callThrough();
-
+      const configuration = getDefaultModuleConfigurationWithSpy();
       TestBed.configureTestingModule({
         imports: [AngularValidationMessagesModule.forRoot(configuration)],
         declarations: [TestHostComponent],
@@ -104,7 +88,7 @@ describe('ValMessagesComponent', () => {
       fixture.detectChanges();
 
       expect(fixture.componentInstance.validationMessageComponent.showErrors()).toEqual(true);
-      expect(validationMessagesConfiguration.displayWhen).not.toHaveBeenCalled();
+      expect(configuration.validationMessages.displayWhen).not.toHaveBeenCalled();
     });
 
     it('the component is shown when the expression returns true', () => {
@@ -158,3 +142,15 @@ describe('ValMessagesComponent', () => {
     });
   });
 });
+
+function getDefaultModuleConfigurationWithSpy() {
+  const configuration: AngularValidationMessagesModuleConfiguration = {
+    validationMessages: {
+      displayWhen: (control, formSubmitted) => true
+    }
+  };
+
+  spyOn(configuration.validationMessages, 'displayWhen').and.callThrough();
+
+  return configuration;
+}
