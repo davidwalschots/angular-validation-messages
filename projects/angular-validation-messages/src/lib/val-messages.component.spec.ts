@@ -72,4 +72,18 @@ describe('ValMessagesComponent', () => {
       fail('Not implemented yet.');
     });
   });
+
+  describe(`when multiple validation errors occur, and the 'multiple' attribute`, () => {
+    it('is not declared, the first message that occurs in the template is shown', () => {
+      fail('Not implemented yet.');
+    });
+
+    it('is declared, all related messages are shown', () => {
+      fail('Not implemented yet.');
+    });
+
+    it('is declared, and multiple messages go to the default, only one default message is shown', () => {
+      fail('Not implemented yet.');
+    });
+  });
 });
