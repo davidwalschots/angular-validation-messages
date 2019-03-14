@@ -30,13 +30,19 @@ describe('ValMessagesComponent', () => {
   describe('when the default display configuration is used', () => {
     @Component({
       template: `
-        <val-messages [for]="control">
-          <val-message default>A default validation message.</val-message>
-        </val-messages>`
+        <form [formGroup]="formGroup">
+          <val-messages [for]="control">
+            <val-message default>A default validation message.</val-message>
+          </val-messages>
+          <button type="submit"></button>
+        </form>`
     })
     class TestHostComponent {
       @ViewChild(ValMessagesComponent) validationMessageComponent: ValMessagesComponent;
       control: FormControl = new FormControl(null, [Validators.required]);
+      formGroup: FormGroup = new FormGroup({
+        myControl: this.control
+      });
 
       touchControl() {
         this.control.markAsTouched();
@@ -48,7 +54,7 @@ describe('ValMessagesComponent', () => {
 
     beforeEach(async(() => {
       TestBed.configureTestingModule({
-        imports: [AngularValidationMessagesModule],
+        imports: [AngularValidationMessagesModule, ReactiveFormsModule],
         declarations: [TestHostComponent],
       })
       .compileComponents();
@@ -72,7 +78,12 @@ describe('ValMessagesComponent', () => {
     });
 
     it('and the form was submitted, validation messages are shown', () => {
+      const button = fixture.debugElement.nativeElement.querySelector('button');
+      button.click();
 
+      fixture.detectChanges();
+
+      expect(component.showErrors()).toEqual(true);
     });
   });
 
@@ -109,7 +120,7 @@ describe('ValMessagesComponent', () => {
     });
 
     it('the control and form state are passed to it', () => {
-      expect(configuration.validationMessages.displayWhen).toHaveBeenCalledWith(component.control, false);
+      expect(configuration.validationMessages.displayWhen).toHaveBeenCalledWith(component.control, undefined);
     });
   });
 
