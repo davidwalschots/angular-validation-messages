@@ -19,7 +19,7 @@
     "@angular/platform-browser": "~7.2.9",
     "@angular/platform-browser-dynamic": "~7.2.9",
     "@angular/router": "~7.2.9",
-    "angular-validation-support": "1.0.0",
+    "angular-validation-support": "1.0.1",
     "core-js": "^2.6.5",
     "rxjs": "~6.4.0",
     "tslib": "^1.9.0",
