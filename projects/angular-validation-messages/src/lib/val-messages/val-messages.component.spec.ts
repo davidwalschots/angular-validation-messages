@@ -93,7 +93,7 @@ describe('ValMessagesComponent', () => {
     let component: TestHostComponent;
 
     beforeEach(async(() => {
-      configuration = getDefaultModuleConfigurationWithSpy();
+      configuration = getDefaultModuleConfigurationWithSpy(true);
       TestBed.configureTestingModule({
         imports: [AngularValidationMessagesModule.forRoot(configuration)],
         declarations: [TestHostComponent],
@@ -116,46 +116,52 @@ describe('ValMessagesComponent', () => {
   });
 
   describe(`when the 'when' attribute is provided`, () => {
-    it(`it overrides the global display configuration`, () => {
-      @Component({
-        template: `
-          <val-messages [for]="control" [when]="control.touched">
-            <val-message default>A default validation message.</val-message>
-          </val-messages>`
-      })
-      class TestHostComponent {
-        @ViewChild(ValMessagesComponent) validationMessageComponent: ValMessagesComponent;
-        control: FormControl = new FormControl(null, [Validators.required]);
+    @Component({
+      template: `
+        <val-messages [for]="control" [when]="control.touched">
+          <val-message default>A default validation message.</val-message>
+        </val-messages>`
+    })
+    class TestHostComponent {
+      @ViewChild(ValMessagesComponent) validationMessageComponent: ValMessagesComponent;
+      control: FormControl = new FormControl(null, [Validators.required]);
 
-        touchControl() {
-          this.control.markAsTouched();
-        }
+      touchControl() {
+        this.control.markAsTouched();
       }
+    }
 
-      const configuration = getDefaultModuleConfigurationWithSpy();
+    let configuration: AngularValidationMessagesModuleConfiguration;
+    let component: TestHostComponent;
+    let fixture: ComponentFixture<TestHostComponent>;
+
+    beforeEach(async(() => {
+      configuration = getDefaultModuleConfigurationWithSpy(false);
       TestBed.configureTestingModule({
         imports: [AngularValidationMessagesModule.forRoot(configuration)],
         declarations: [TestHostComponent],
       });
+    }));
 
-      const fixture: ComponentFixture<TestHostComponent> = TestBed.createComponent(TestHostComponent);
-
+    beforeEach(() => {
+      fixture = TestBed.createComponent(TestHostComponent);
+      component = fixture.componentInstance;
       fixture.detectChanges();
-      expect(fixture.componentInstance.validationMessageComponent.showErrors()).toEqual(false);
+    });
 
-      fixture.componentInstance.touchControl();
-      fixture.detectChanges();
-
-      expect(fixture.componentInstance.validationMessageComponent.showErrors()).toEqual(true);
+    it(`it overrides the provided display configuration`, () => {
       expect(configuration.validationMessages.displayWhen).not.toHaveBeenCalled();
     });
 
-    it('the component is shown when the expression returns true', () => {
+    it('and it returns true, validation messages are shown', () => {
+      component.touchControl();
+      fixture.detectChanges();
 
+      expect(component.validationMessageComponent.showErrors()).toEqual(true);
     });
 
-    it('the component is not shown when the expression returns false', () => {
-
+    it('and it returns false, validation messages are not shown', () => {
+      expect(component.validationMessageComponent.showErrors()).toEqual(false);
     });
   });
 
@@ -202,10 +208,10 @@ describe('ValMessagesComponent', () => {
   });
 });
 
-function getDefaultModuleConfigurationWithSpy() {
+function getDefaultModuleConfigurationWithSpy(returnValue: boolean) {
   const configuration: AngularValidationMessagesModuleConfiguration = {
     validationMessages: {
-      displayWhen: (control, formSubmitted) => true
+      displayWhen: (control, formSubmitted) => returnValue
     }
   };
 
