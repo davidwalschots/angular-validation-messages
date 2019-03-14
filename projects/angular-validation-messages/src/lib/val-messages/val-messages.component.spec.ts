@@ -78,7 +78,7 @@ describe('ValMessagesComponent', () => {
     });
   });
 
-  it('when display configuration is provided, it is used instead of the default', () => {
+  describe('when display configuration is provided', () => {
     @Component({
       template: `
         <val-messages [for]="control">
@@ -89,16 +89,30 @@ describe('ValMessagesComponent', () => {
       control: FormControl = new FormControl(null, [Validators.required]);
     }
 
-    const configuration = getDefaultModuleConfigurationWithSpy();
-    TestBed.configureTestingModule({
-      imports: [AngularValidationMessagesModule.forRoot(configuration)],
-      declarations: [TestHostComponent],
+    let configuration: AngularValidationMessagesModuleConfiguration;
+    let component: TestHostComponent;
+
+    beforeEach(async(() => {
+      configuration = getDefaultModuleConfigurationWithSpy();
+      TestBed.configureTestingModule({
+        imports: [AngularValidationMessagesModule.forRoot(configuration)],
+        declarations: [TestHostComponent],
+      });
+    }));
+
+    beforeEach(() => {
+      const fixture = TestBed.createComponent(TestHostComponent);
+      component = fixture.componentInstance;
+      fixture.detectChanges();
     });
 
-    const fixture: ComponentFixture<TestHostComponent> = TestBed.createComponent(TestHostComponent);
+    it('it is used instead of the default', () => {
+      expect(configuration.validationMessages.displayWhen).toHaveBeenCalled();
+    });
 
-    fixture.detectChanges();
-    expect(configuration.validationMessages.displayWhen).toHaveBeenCalled();
+    it('the control and form state are passed to it', () => {
+      expect(configuration.validationMessages.displayWhen).toHaveBeenCalledWith(component.control, false);
+    });
   });
 
   describe(`when the 'when' attribute is provided`, () => {
