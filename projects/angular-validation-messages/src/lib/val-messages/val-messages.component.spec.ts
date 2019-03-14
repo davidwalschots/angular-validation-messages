@@ -2,11 +2,9 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ValMessagesComponent } from './val-messages.component';
 import { Component, ViewChild } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
-import { ValidationMessagesConfiguration } from '../validation-messages-configuration';
+import { FormControl, Validators, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { AngularValidationMessagesModuleConfiguration } from '../angular-validation-messages-module-configuration';
 import { AngularValidationMessagesModule } from '../angular-validation-messages.module';
-import { config } from 'rxjs';
 
 describe('ValMessagesComponent', () => {
   // let component: ValMessagesComponent;
@@ -166,16 +164,56 @@ describe('ValMessagesComponent', () => {
   });
 
   describe(`when the 'for' attribute`, () => {
-    it('is not set, an exception is thrown', () => {
+    @Component({
+      template: `
+        <div [formGroup]="formGroup">
+          <val-messages>
+            <val-message default>A default validation message.</val-message>
+          </val-messages>
+        </div>`
+    })
+    class TestHostComponent {
+      @ViewChild(ValMessagesComponent) validationMessageComponent: ValMessagesComponent;
+      control: FormControl = new FormControl(null, [Validators.required]);
+      formGroup: FormGroup = new FormGroup({
+        myControl: this.control
+      });
 
+      touchControl() {
+        this.control.markAsTouched();
+      }
+    }
+
+    let component: TestHostComponent;
+
+    beforeEach(async(() => {
+      TestBed.configureTestingModule({
+        imports: [AngularValidationMessagesModule, ReactiveFormsModule],
+        declarations: [TestHostComponent]
+      })
+      .compileComponents();
+    }));
+
+    beforeEach(() => {
+      const fixture = TestBed.createComponent(TestHostComponent);
+      component = fixture.componentInstance;
+      fixture.detectChanges();
+    });
+
+    it('has an empty value passed to it, an exception is thrown', () => {
+      expect(() => component.validationMessageComponent.for = undefined).toThrowError();
     });
 
     it('has a string passed to it, but a control by that name is not found, an exception is thrown', () => {
-
+      expect(() => component.validationMessageComponent.for = 'test').toThrowError();
     });
 
-    it('has a string passed to it, but a parent FormGroup is not found, an exception is thrown', () => {
+    it('has a string passed to it, and a control is found, no exception is thrown', () => {
+      expect(() => component.validationMessageComponent.for = 'myControl').not.toThrowError();
+    });
 
+    it('has a control passed to it, no exception is thrown', () => {
+      expect(() => component.validationMessageComponent.for = component.control).not.toThrowError();
     });
   });
 

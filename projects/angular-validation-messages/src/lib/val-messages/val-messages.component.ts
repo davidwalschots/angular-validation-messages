@@ -44,6 +44,10 @@ export class ValMessagesComponent implements OnInit {
       return this._displayWhen;
     }
 
+    if (this._for === undefined) {
+      return false;
+    }
+
     // TODO: Implement form submitted.
     return this.getConfiguration().displayWhen(this._for, false);
   }
