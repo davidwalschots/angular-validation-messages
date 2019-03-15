@@ -66,7 +66,6 @@ export class ValMessagesComponent implements OnInit, OnDestroy {
       return false;
     }
 
-    // TODO: Implement form submitted.
     return this.getConfiguration().displayWhen(this._for, this.formSubmitted);
   }
 
