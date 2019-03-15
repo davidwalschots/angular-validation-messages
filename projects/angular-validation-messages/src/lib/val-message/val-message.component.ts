@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { ValidationErrors } from '@angular/forms';
 
 @Component({
   selector: 'val-message',
@@ -10,4 +11,11 @@ import { Component } from '@angular/core';
   styles: []
 })
 export class ValMessageComponent {
+  @Input()
+  for: string;
+  show = false;
+
+  canShow(errors: ValidationErrors): boolean {
+    return true;
+  }
 }

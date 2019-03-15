@@ -1,10 +1,11 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ValMessagesComponent } from './val-messages.component';
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, ViewChildren, QueryList } from '@angular/core';
 import { FormControl, Validators, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { AngularValidationMessagesModuleConfiguration } from '../angular-validation-messages-module-configuration';
 import { AngularValidationMessagesModule } from '../angular-validation-messages.module';
+import { ValMessageComponent } from '../val-message/val-message.component';
 
 describe('ValMessagesComponent', () => {
   // let component: ValMessagesComponent;
@@ -226,11 +227,47 @@ describe('ValMessagesComponent', () => {
     it('has a control passed to it, no exception is thrown', () => {
       expect(() => component.validationMessageComponent.for = component.control).not.toThrowError();
     });
+
+    it('has another control passed to it, validation is still shown', () => {
+
+    });
   });
 
   describe('when a validation error occurs', () => {
-    it(`the validation message of the error's type is shown`, () => {
+    @Component({
+      template: `
+        <val-messages [for]="control" [when]="true">
+          <val-message for="required">Input is required.</val-message>
+          <val-message default>A default validation message.</val-message>
+        </val-messages>`
+    })
+    class TestHostComponent {
+      @ViewChild(ValMessagesComponent) validationMessagesComponent: ValMessagesComponent;
+      @ViewChildren(ValMessageComponent) validationMessageComponents: QueryList<ValMessageComponent>;
+      control: FormControl = new FormControl(null, [Validators.required]);
+    }
 
+    beforeEach(async(() => {
+      TestBed.configureTestingModule({
+        imports: [AngularValidationMessagesModule],
+        declarations: [TestHostComponent]
+      })
+      .compileComponents();
+    }));
+
+    let component: TestHostComponent;
+    let fixture: ComponentFixture<TestHostComponent>;
+
+    beforeEach(() => {
+      fixture = TestBed.createComponent(TestHostComponent);
+      component = fixture.componentInstance;
+      fixture.detectChanges();
+    });
+
+    it(`the validation message of the error's type is shown`, () => {
+      const visibleMessages = component.validationMessageComponents.filter(x => x.show);
+      expect(visibleMessages.length).toEqual(1);
+      visibleMessages[0].for = 'required';
     });
 
     it('and there is no validation message for it, the default validation message is shown', () => {
@@ -242,8 +279,12 @@ describe('ValMessagesComponent', () => {
     });
   });
 
+  it(`when a validation error is resolved, the validation message is not shown`, () => {
+
+  });
+
   describe(`when multiple validation errors occur, and the 'multiple' attribute`, () => {
-    it('is not declared, the first message that occurs in the template is shown', () => {
+    it('is not declared, the message first declared in the DOM of the template is shown', () => {
 
     });
 
@@ -251,9 +292,13 @@ describe('ValMessagesComponent', () => {
 
     });
 
-    it('is declared, and multiple messages go to the default, only one default message is shown', () => {
+    it('is declared, and multiple error types go to the default, only one default message is shown', () => {
 
     });
+  });
+
+  it(`when multiple message elements have the 'default' attribute, an error is thrown`, () => {
+
   });
 });
 
