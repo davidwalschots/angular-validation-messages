@@ -300,8 +300,6 @@ describe('ValMessagesComponent', () => {
           return true;
         };
 
-        spyOn(window, 'onerror').and.callThrough();
-
         component.showDefault = false;
         fixture.detectChanges();
         component.control.setValue('a');
