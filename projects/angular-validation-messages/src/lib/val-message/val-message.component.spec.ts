@@ -62,5 +62,19 @@ describe('ValMessageComponent', () => {
       expect(component.withDefaultWithTrueValueAsString.default).toEqual(true);
       expect(component.withDefaultWithSomeValue.default).toEqual(true);
     });
+
+    describe(`can show itself when`, () => {
+      it(`there is an error with a key equal to the 'for' attribute`, () => {
+
+      });
+
+      it(`it is a default component`, () => {
+
+      });
+    });
+
+    it(`cannot show itself when it isn't default, nor a matching key is provided`, () => {
+
+    });
   });
 });

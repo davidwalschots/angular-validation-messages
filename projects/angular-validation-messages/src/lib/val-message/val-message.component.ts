@@ -26,7 +26,7 @@ export class ValMessageComponent {
   }
 
   canShow(errors: ValidationErrors): boolean {
-    return true;
+    return this._isDefault || errors.hasOwnProperty(this.for);
   }
 
   private  coerceBooleanProperty(value: any): boolean {

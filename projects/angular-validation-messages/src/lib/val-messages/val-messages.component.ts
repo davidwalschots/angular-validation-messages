@@ -4,7 +4,7 @@ import { AngularValidationMessagesModuleConfigurationToken } from '../angular-va
 import { AngularValidationMessagesModuleConfiguration } from '../angular-validation-messages-module-configuration';
 import { getFormControlFromContainer } from '../get-form-control-from-container';
 import { ValidationMessagesConfiguration } from '../validation-messages-configuration';
-import { FormDirective } from 'angular-validation-support';
+import { FormDirective, getControlPath } from 'angular-validation-support';
 import { Subscription } from 'rxjs';
 import { ValMessageComponent } from '../val-message/val-message.component';
 
@@ -65,7 +65,7 @@ export class ValMessagesComponent implements OnInit, AfterContentInit, OnDestroy
     this._for = typeof control === 'string' ? getFormControlFromContainer(control, this.controlContainer) : control;
 
     if (this._for) {
-      this.forStatusChangeSubscription = this._for.statusChanges.subscribe(x => this.handleControlStatusChange(x));
+      this.forStatusChangeSubscription = this._for.statusChanges.subscribe(() => this.handleControlStatusChange(this._for));
       this.handleControlStatusChange(this._for);
     }
   }
@@ -102,7 +102,19 @@ export class ValMessagesComponent implements OnInit, AfterContentInit, OnDestroy
 
     this.validationMessageComponents.forEach(x => x.show = false);
 
-    const messageComponents = this.validationMessageComponents.filter(x => x.canShow(control.errors));
-    messageComponents[0].show = true;
+    const nonDefaultMessageComponents = this.validationMessageComponents.filter(x => x.canShow(control.errors) && !x.default);
+
+    if (nonDefaultMessageComponents.length > 0) {
+      nonDefaultMessageComponents[0].show = true;
+    } else {
+      const defaultMessageComponents = this.validationMessageComponents.filter(x => x.default);
+      if (defaultMessageComponents.length > 0) {
+        defaultMessageComponents[0].show = true;
+      } else {
+        const controlPath = getControlPath(control);
+        throw new Error(`There is no suitable 'val-message' element to show an error`
+          + (controlPath.length > 0 ? ` of ${controlPath}` : '') + '.');
+      }
+    }
   }
 }

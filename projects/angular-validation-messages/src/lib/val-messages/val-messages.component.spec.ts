@@ -238,13 +238,14 @@ describe('ValMessagesComponent', () => {
       template: `
         <val-messages [for]="control" [when]="true">
           <val-message for="required">Input is required.</val-message>
-          <val-message default>A default validation message.</val-message>
+          <val-message *ngIf="showDefault" default>A default validation message.</val-message>
         </val-messages>`
     })
     class TestHostComponent {
       @ViewChild(ValMessagesComponent) validationMessagesComponent: ValMessagesComponent;
       @ViewChildren(ValMessageComponent) validationMessageComponents: QueryList<ValMessageComponent>;
-      control: FormControl = new FormControl(null, [Validators.required]);
+      control: FormControl = new FormControl(null, [Validators.required, Validators.minLength(2)]);
+      showDefault = true;
     }
 
     beforeEach(async(() => {
@@ -271,11 +272,47 @@ describe('ValMessagesComponent', () => {
     });
 
     it('and there is no validation message for it, the default validation message is shown', () => {
+      component.control.setValue('a');
+      fixture.detectChanges();
 
+      const visibleMessages = component.validationMessageComponents.filter(x => x.show);
+      expect(visibleMessages.length).toEqual(1);
+      expect(visibleMessages[0].default).toEqual(true);
     });
 
-    it('and there is neither a message nor default for it, an exception is thrown', () => {
+    describe('', () => {
+      let onerrorBeforeTest: ErrorEventHandler;
+      beforeEach(() => {
+        onerrorBeforeTest = window.onerror;
+      });
+      afterEach(() => {
+        window.onerror = onerrorBeforeTest;
+      });
 
+      it('and there is neither a message nor default for it, an exception is thrown', (done: Function) => {
+        // We can't simply use expect().toThrowError(). In RxJS < 6, errors were synchronously thrown. However,
+        // in RxJS 6, any error inside of 'next' is asynchronously thrown. So these errors will never reach the call stack
+        // of the expect() function. The observable also isn't exposed, and therefore we need to resort to catching
+        // the error through window.onerror.
+        let thrownError: Error;
+        window.onerror = (_, __, ___, ____, error: Error) => {
+          thrownError = error;
+          return true;
+        };
+
+        spyOn(window, 'onerror').and.callThrough();
+
+        component.showDefault = false;
+        fixture.detectChanges();
+        component.control.setValue('a');
+        fixture.detectChanges();
+
+        setTimeout(() => {
+          expect(thrownError).toBeDefined();
+          expect(thrownError.message).toContain(`There is no suitable 'val-message' element to show an error`);
+          done();
+        });
+      });
     });
   });
 
@@ -312,4 +349,8 @@ function getDefaultModuleConfigurationWithSpy(returnValue: boolean) {
   spyOn(configuration.validationMessages, 'displayWhen').and.callThrough();
 
   return configuration;
+}
+
+function isErrorEvent(event: Event | string): event is ErrorEvent {
+  return (<ErrorEvent>event).error !== undefined;
 }
