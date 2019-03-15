@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, tick, fakeAsync } from '@angular/core/testing';
 
 import { ValMessagesComponent } from './val-messages.component';
 import { Component, ViewChild, ViewChildren, QueryList } from '@angular/core';
@@ -280,38 +280,16 @@ describe('ValMessagesComponent', () => {
       expect(visibleMessages[0].default).toEqual(true);
     });
 
-    describe('', () => {
-      let onerrorBeforeTest: ErrorEventHandler;
-      beforeEach(() => {
-        onerrorBeforeTest = window.onerror;
-      });
-      afterEach(() => {
-        window.onerror = onerrorBeforeTest;
-      });
+    it('and there is neither a message nor default for it, an exception is thrown', fakeAsync(() => {
+      component.showDefault = false;
+      fixture.detectChanges();
+      component.control.setValue('a');
+      fixture.detectChanges();
 
-      it('and there is neither a message nor default for it, an exception is thrown', (done: Function) => {
-        // We can't simply use expect().toThrowError(). In RxJS < 6, errors were synchronously thrown. However,
-        // in RxJS 6, any error inside of 'next' is asynchronously thrown. So these errors will never reach the call stack
-        // of the expect() function. The observable also isn't exposed, and therefore we need to resort to catching
-        // the error through window.onerror.
-        let thrownError: Error;
-        window.onerror = (_, __, ___, ____, error: Error) => {
-          thrownError = error;
-          return true;
-        };
-
-        component.showDefault = false;
-        fixture.detectChanges();
-        component.control.setValue('a');
-        fixture.detectChanges();
-
-        setTimeout(() => {
-          expect(thrownError).toBeDefined();
-          expect(thrownError.message).toContain(`There is no suitable 'val-message' element to show an error`);
-          done();
-        });
+      expect(() => tick()).toThrowMatching(thrown => {
+        return (thrown.message as string).includes(`There is no suitable 'val-message' element to show an error`);
       });
-    });
+    }));
   });
 
   it(`when a validation error is resolved, the validation message is not shown`, () => {
