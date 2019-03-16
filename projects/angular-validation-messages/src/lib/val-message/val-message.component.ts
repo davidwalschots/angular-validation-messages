@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { ValidationErrors } from '@angular/forms';
+import { coerceBooleanProperty } from '../coerce-boolean-property';
 
 @Component({
   selector: 'val-message',
@@ -22,14 +23,10 @@ export class ValMessageComponent {
     return this._isDefault;
   }
   set default(value: any) {
-    this._isDefault = this.coerceBooleanProperty(value);
+    this._isDefault = coerceBooleanProperty(value);
   }
 
   canShow(errors: ValidationErrors): boolean {
     return this._isDefault || errors.hasOwnProperty(this.for);
-  }
-
-  private  coerceBooleanProperty(value: any): boolean {
-    return value != null && `${value}` !== 'false';
   }
 }

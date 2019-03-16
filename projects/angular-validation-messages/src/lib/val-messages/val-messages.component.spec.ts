@@ -298,12 +298,59 @@ describe('ValMessagesComponent', () => {
   });
 
   describe(`when multiple validation errors occur, and the 'multiple' attribute`, () => {
-    it('is not declared, the message first declared in the DOM of the template is shown', () => {
+    @Component({
+      template: `
+        <val-messages [for]="control" [when]="true" *ngIf="showNoMultiple">
+          <val-message for="required"></val-message>
+          <val-message for="required"></val-message>
+          <val-message default></val-message>
+        </val-messages>
+        <val-messages [for]="control" [when]="true" *ngIf="showMultiple" multiple>
+          <val-message for="required"></val-message>
+          <val-message for="required"></val-message>
+          <val-message default></val-message>
+        </val-messages>`
+    })
+    class TestHostComponent {
+      @ViewChild(ValMessagesComponent) validationMessagesComponent: ValMessagesComponent;
+      @ViewChildren(ValMessageComponent) validationMessageComponents: QueryList<ValMessageComponent>;
+      control: FormControl = new FormControl(null, [Validators.required]);
 
+      showNoMultiple = false;
+      showMultiple = false;
+    }
+
+    beforeEach(async(() => {
+      TestBed.configureTestingModule({
+        imports: [AngularValidationMessagesModule],
+        declarations: [TestHostComponent]
+      })
+      .compileComponents();
+    }));
+
+    let component: TestHostComponent;
+    let fixture: ComponentFixture<TestHostComponent>;
+
+    beforeEach(() => {
+      fixture = TestBed.createComponent(TestHostComponent);
+      component = fixture.componentInstance;
+      fixture.detectChanges();
+    });
+
+    it('is not declared, the message first declared in the DOM of the template is shown', () => {
+      component.showNoMultiple = true;
+      fixture.detectChanges();
+
+      const visibleMessages = component.validationMessageComponents.filter(x => x.show);
+      expect(visibleMessages.length).toEqual(1);
     });
 
     it('is declared, all related messages are shown', () => {
+      component.showMultiple = true;
+      fixture.detectChanges();
 
+      const visibleMessages = component.validationMessageComponents.filter(x => x.show);
+      expect(visibleMessages.length).toEqual(2);
     });
 
     it('is declared, and multiple error types go to the default, only one default message is shown', () => {

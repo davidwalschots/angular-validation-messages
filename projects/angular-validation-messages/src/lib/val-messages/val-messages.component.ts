@@ -7,6 +7,7 @@ import { ValidationMessagesConfiguration } from '../validation-messages-configur
 import { FormDirective, getControlPath } from 'angular-validation-support';
 import { Subscription } from 'rxjs';
 import { ValMessageComponent } from '../val-message/val-message.component';
+import { coerceBooleanProperty } from '../coerce-boolean-property';
 
 @Component({
   selector: 'val-messages',
@@ -20,6 +21,7 @@ export class ValMessagesComponent implements OnInit, AfterContentInit, OnDestroy
   private formSubmitted: boolean | undefined = undefined;
   private formSubmittedSubscription: Subscription;
   private forStatusChangeSubscription: Subscription;
+  private _isMultiple = false;
 
   @ContentChildren(ValMessageComponent) validationMessageComponents: QueryList<ValMessageComponent>;
   _for: FormControl;
@@ -71,6 +73,14 @@ export class ValMessagesComponent implements OnInit, AfterContentInit, OnDestroy
   }
 
   @Input()
+  get multiple() {
+    return this._isMultiple;
+  }
+  set multiple(value: any) {
+    this._isMultiple = coerceBooleanProperty(value);
+  }
+
+  @Input()
   set when(display: boolean) {
     this._displayWhen = typeof display === 'boolean' ? display : undefined;
   }
@@ -109,7 +119,13 @@ export class ValMessagesComponent implements OnInit, AfterContentInit, OnDestroy
     const nonDefaultMessageComponents = this.validationMessageComponents.filter(x => x.canShow(control.errors) && !x.default);
 
     if (nonDefaultMessageComponents.length > 0) {
-      nonDefaultMessageComponents[0].show = true;
+      if (!this._isMultiple) {
+        nonDefaultMessageComponents.length = 1;
+      }
+
+      for (const component of nonDefaultMessageComponents) {
+        component.show = true;
+      }
     } else {
       const defaultMessageComponents = this.validationMessageComponents.filter(x => x.default);
       if (defaultMessageComponents.length > 0) {
