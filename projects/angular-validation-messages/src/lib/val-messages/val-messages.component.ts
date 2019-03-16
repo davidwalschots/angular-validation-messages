@@ -129,7 +129,13 @@ export class ValMessagesComponent implements OnInit, AfterContentInit, OnDestroy
     } else {
       const defaultMessageComponents = this.validationMessageComponents.filter(x => x.default);
       if (defaultMessageComponents.length > 0) {
-        defaultMessageComponents[0].show = true;
+        if (!this._isMultiple) {
+          defaultMessageComponents.length = 1;
+        }
+
+        for (const component of defaultMessageComponents) {
+          component.show = true;
+        }
       } else {
         const controlPath = getControlPath(control);
         throw new Error(`There is no suitable 'val-message' element to show an error`

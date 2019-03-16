@@ -309,6 +309,11 @@ describe('ValMessagesComponent', () => {
           <val-message for="required"></val-message>
           <val-message for="required"></val-message>
           <val-message default></val-message>
+        </val-messages>
+        <val-messages [for]="control" [when]="true" *ngIf="showMultipleDefault" multiple>
+          <val-message for="minlength"></val-message>
+          <val-message default></val-message>
+          <val-message default></val-message>
         </val-messages>`
     })
     class TestHostComponent {
@@ -318,6 +323,7 @@ describe('ValMessagesComponent', () => {
 
       showNoMultiple = false;
       showMultiple = false;
+      showMultipleDefault = false;
     }
 
     beforeEach(async(() => {
@@ -353,13 +359,14 @@ describe('ValMessagesComponent', () => {
       expect(visibleMessages.length).toEqual(2);
     });
 
-    it('is declared, and multiple error types go to the default, only one default message is shown', () => {
+    it('is declared, all default messages are shown when there are no related messages', () => {
+      component.showMultipleDefault = true;
+      fixture.detectChanges();
 
+      const visibleMessages = component.validationMessageComponents.filter(x => x.show);
+      expect(visibleMessages.length).toEqual(2);
+      expect(visibleMessages.every(x => x.default)).toEqual(true);
     });
-  });
-
-  it(`when multiple message elements have the 'default' attribute, an error is thrown`, () => {
-
   });
 });
 
