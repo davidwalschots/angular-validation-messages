@@ -110,37 +110,37 @@ export class ValMessagesComponent implements OnInit, AfterContentInit, OnDestroy
       return;
     }
 
-    this.validationMessageComponents.forEach(x => x.show = false);
+    this.hideAllMessageComponents();
 
     if (!control.errors) {
       return;
     }
 
+    this.pickAndShowMessageComponents(control);
+  }
+
+  private hideAllMessageComponents() {
+    this.validationMessageComponents.forEach(x => x.show = false);
+  }
+
+  private pickAndShowMessageComponents(control: FormControl) {
     const nonDefaultMessageComponents = this.validationMessageComponents.filter(x => x.canShow(control.errors) && !x.default);
+    const defaultMessageComponents = this.validationMessageComponents.filter(x => x.canShow(control.errors) && x.default);
 
     if (nonDefaultMessageComponents.length > 0) {
-      if (!this._isMultiple) {
-        nonDefaultMessageComponents.length = 1;
-      }
-
-      for (const component of nonDefaultMessageComponents) {
-        component.show = true;
-      }
+      this.showMessageComponents(nonDefaultMessageComponents);
+    } else if (defaultMessageComponents.length > 0) {
+      this.showMessageComponents(defaultMessageComponents);
     } else {
-      const defaultMessageComponents = this.validationMessageComponents.filter(x => x.default);
-      if (defaultMessageComponents.length > 0) {
-        if (!this._isMultiple) {
-          defaultMessageComponents.length = 1;
-        }
+      const controlPath = getControlPath(control);
+      throw new Error(`There is no suitable 'val-message' element to show an error`
+        + (controlPath.length > 0 ? ` of ${controlPath}` : '') + '.');
+    }
+  }
 
-        for (const component of defaultMessageComponents) {
-          component.show = true;
-        }
-      } else {
-        const controlPath = getControlPath(control);
-        throw new Error(`There is no suitable 'val-message' element to show an error`
-          + (controlPath.length > 0 ? ` of ${controlPath}` : '') + '.');
-      }
+  private showMessageComponents(components: ValMessageComponent[]) {
+    for (let i = 0; i < components.length && (i < 1 || this._isMultiple); i++) {
+      components[i].show = true;
     }
   }
 }
