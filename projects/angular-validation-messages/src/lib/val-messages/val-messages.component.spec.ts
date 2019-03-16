@@ -273,7 +273,6 @@ describe('ValMessagesComponent', () => {
 
     it('and there is no validation message for it, the default validation message is shown', () => {
       component.control.setValue('a');
-      fixture.detectChanges();
 
       const visibleMessages = component.validationMessageComponents.filter(x => x.show);
       expect(visibleMessages.length).toEqual(1);
@@ -284,7 +283,6 @@ describe('ValMessagesComponent', () => {
       component.showDefault = false;
       fixture.detectChanges();
       component.control.setValue('a');
-      fixture.detectChanges();
 
       expect(() => tick()).toThrowMatching(thrown => {
         return (thrown.message as string).includes(`There is no suitable 'val-message' element to show an error`);
