@@ -290,10 +290,13 @@ describe('ValMessagesComponent', () => {
         return (thrown.message as string).includes(`There is no suitable 'val-message' element to show an error`);
       });
     }));
-  });
 
-  it(`when a validation error is resolved, the validation message is not shown`, () => {
+    it('and it is resolved, the validation message is no longer shown', () => {
+      component.control.setValue('aa');
 
+      const visibleMessages = component.validationMessageComponents.filter(x => x.show);
+      expect(visibleMessages.length).toEqual(0);
+    });
   });
 
   describe(`when multiple validation errors occur, and the 'multiple' attribute`, () => {

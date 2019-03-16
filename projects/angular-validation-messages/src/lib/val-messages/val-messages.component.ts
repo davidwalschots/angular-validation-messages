@@ -102,6 +102,10 @@ export class ValMessagesComponent implements OnInit, AfterContentInit, OnDestroy
 
     this.validationMessageComponents.forEach(x => x.show = false);
 
+    if (!control.errors) {
+      return;
+    }
+
     const nonDefaultMessageComponents = this.validationMessageComponents.filter(x => x.canShow(control.errors) && !x.default);
 
     if (nonDefaultMessageComponents.length > 0) {
