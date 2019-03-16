@@ -373,15 +373,11 @@ describe('ValMessagesComponent', () => {
 function getDefaultModuleConfigurationWithSpy(returnValue: boolean) {
   const configuration: AngularValidationMessagesModuleConfiguration = {
     validationMessages: {
-      displayWhen: (control, formSubmitted) => returnValue
+      displayWhen: () => returnValue
     }
   };
 
   spyOn(configuration.validationMessages, 'displayWhen').and.callThrough();
 
   return configuration;
-}
-
-function isErrorEvent(event: Event | string): event is ErrorEvent {
-  return (<ErrorEvent>event).error !== undefined;
 }
