@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Optional, Inject, OnDestroy, AfterContentInit, ContentChildren, QueryList } from '@angular/core';
+import { Component, OnInit, Input, Optional, Inject, OnDestroy, AfterContentInit, ContentChildren, QueryList, ViewEncapsulation } from '@angular/core';
 import { FormControl, ControlContainer } from '@angular/forms';
 import { AngularValidationMessagesModuleConfigurationToken } from '../angular-validation-messages-module-configuration-token';
 import { AngularValidationMessagesModuleConfiguration } from '../angular-validation-messages-module-configuration';
@@ -12,7 +12,7 @@ import { coerceBooleanProperty } from '../coerce-boolean-property';
 @Component({
   selector: 'val-messages',
   templateUrl: './val-messages.component.html',
-  styles: []
+  encapsulation: ViewEncapsulation.None
 })
 export class ValMessagesComponent implements OnInit, AfterContentInit, OnDestroy {
   private defaultConfiguration: ValidationMessagesConfiguration = {

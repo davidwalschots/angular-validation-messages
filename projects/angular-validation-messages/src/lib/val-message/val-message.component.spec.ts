@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, TestBed } from '@angular/core/testing';
 import { ValMessageComponent } from './val-message.component';
 import { Component, ViewChild } from '@angular/core';
 
@@ -24,16 +24,16 @@ describe('ValMessageComponent', () => {
       @ViewChild('withDefaultWithTrueValueAsBoolean') withDefaultWithTrueValueAsBoolean: ValMessageComponent;
       @ViewChild('withDefaultWithSomeValue') withDefaultWithSomeValue: ValMessageComponent;
     }
-  
+
     let component: TestHostComponent;
-  
+
     beforeEach(async(() => {
       TestBed.configureTestingModule({
         declarations: [ TestHostComponent, ValMessageComponent ]
       })
       .compileComponents();
     }));
-  
+
     beforeEach(() => {
       const fixture = TestBed.createComponent(TestHostComponent);
       component = fixture.componentInstance;
@@ -62,14 +62,14 @@ describe('ValMessageComponent', () => {
 
   describe(`canShow`, () => {
     let component: ValMessageComponent;
-  
+
     beforeEach(async(() => {
       TestBed.configureTestingModule({
         declarations: [ ValMessageComponent ]
       })
       .compileComponents();
     }));
-  
+
     beforeEach(() => {
       const fixture = TestBed.createComponent(ValMessageComponent);
       component = fixture.componentInstance;

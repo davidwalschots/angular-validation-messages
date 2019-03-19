@@ -1,15 +1,11 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ViewEncapsulation } from '@angular/core';
 import { ValidationErrors } from '@angular/forms';
 import { coerceBooleanProperty } from '../coerce-boolean-property';
 
 @Component({
   selector: 'val-message',
-  template: `
-    <p>
-      angular-validation-messages works!
-    </p>
-  `,
-  styles: []
+  templateUrl: './val-message.component.html',
+  encapsulation: ViewEncapsulation.None
 })
 export class ValMessageComponent {
   private _isDefault = false;
