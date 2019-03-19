@@ -31,7 +31,7 @@ describe('coerceBooleanProperty', () => {
     it('when passed true as a string', () => {
       expect(coerceBooleanProperty('true')).toEqual(true);
     });
-    
+
     it('when passed an empty string', () => {
       expect(coerceBooleanProperty('')).toEqual(true);
     });
