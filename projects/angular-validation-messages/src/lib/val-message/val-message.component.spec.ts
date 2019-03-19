@@ -1,6 +1,7 @@
-import { async, TestBed } from '@angular/core/testing';
+import { async, TestBed, ComponentFixture } from '@angular/core/testing';
 import { ValMessageComponent } from './val-message.component';
 import { Component, ViewChild } from '@angular/core';
+import { By } from '@angular/platform-browser';
 
 describe('ValMessageComponent', () => {
   describe(`has a 'default' property, which when`, () => {
@@ -60,8 +61,9 @@ describe('ValMessageComponent', () => {
     });
   });
 
-  describe(`canShow`, () => {
+  describe('', () => {
     let component: ValMessageComponent;
+    let fixture: ComponentFixture<ValMessageComponent>;
 
     beforeEach(async(() => {
       TestBed.configureTestingModule({
@@ -71,28 +73,44 @@ describe('ValMessageComponent', () => {
     }));
 
     beforeEach(() => {
-      const fixture = TestBed.createComponent(ValMessageComponent);
+      fixture = TestBed.createComponent(ValMessageComponent);
       component = fixture.componentInstance;
       fixture.detectChanges();
     });
 
-    it(`returns true when there is an error with a key equal to the 'for' attribute`, () => {
-      component.for = 'required';
+    it(`shows itself when the 'show' property is true`, () => {
+      component.show = true;
+      fixture.detectChanges();
 
-      expect(component.canShow({ minlength: true, required: true })).toEqual(true);
+      expect(fixture.debugElement.query(By.css('.val-message'))).not.toBeNull();
     });
 
-    it(`returns true when it is a 'default' component`, () => {
-      component.default = true;
+    it(`hides itself when the 'show' property is false`, () => {
+      component.show = false;
+      fixture.detectChanges();
 
-      expect(component.canShow({ minlength: true, required: true })).toEqual(true);
+      expect(fixture.debugElement.query(By.css('.val-message'))).toBeNull();
     });
 
-    it(`returns false when there is no key equal to the 'for' attribute, and it isn't default`, () => {
-      component.default = false;
-      component.for = 'maxlength';
+    describe(`canShow`, () => {
+      it(`returns true when there is an error with a key equal to the 'for' attribute`, () => {
+        component.for = 'required';
 
-      expect(component.canShow({ minlength: true, required: true })).toEqual(false);
+        expect(component.canShow({ minlength: true, required: true })).toEqual(true);
+      });
+
+      it(`returns true when it is a 'default' component`, () => {
+        component.default = true;
+
+        expect(component.canShow({ minlength: true, required: true })).toEqual(true);
+      });
+
+      it(`returns false when there is no key equal to the 'for' attribute, and it isn't default`, () => {
+        component.default = false;
+        component.for = 'maxlength';
+
+        expect(component.canShow({ minlength: true, required: true })).toEqual(false);
+      });
     });
   });
 });
