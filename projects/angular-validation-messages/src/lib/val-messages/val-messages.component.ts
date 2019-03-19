@@ -20,7 +20,7 @@ export class ValMessagesComponent implements OnInit, AfterContentInit, OnDestroy
   };
   private formSubmitted: boolean | undefined = undefined;
   private formSubmittedSubscription: Subscription;
-  private forStatusChangeSubscription: Subscription;
+  private forStatusChangesSubscription: Subscription;
   private _isMultiple = false;
 
   @ContentChildren(ValMessageComponent) validationMessageComponents: QueryList<ValMessageComponent>;
@@ -52,13 +52,12 @@ export class ValMessagesComponent implements OnInit, AfterContentInit, OnDestroy
     if (this.formSubmittedSubscription) {
       this.formSubmittedSubscription.unsubscribe();
     }
+    this.unsubscribeFromControlStatusChanges();
   }
 
   @Input()
   set for(control: FormControl | string) {
-    if (this.forStatusChangeSubscription) {
-      this.forStatusChangeSubscription.unsubscribe();
-    }
+    this.unsubscribeFromControlStatusChanges();
 
     if (!control) {
       throw new Error(`The val-messages' for attribute requires a value.`);
@@ -67,7 +66,7 @@ export class ValMessagesComponent implements OnInit, AfterContentInit, OnDestroy
     this._for = typeof control === 'string' ? getFormControlFromContainer(control, this.controlContainer) : control;
 
     if (this._for) {
-      this.forStatusChangeSubscription = this._for.statusChanges.subscribe(() => this.handleControlStatusChange(this._for));
+      this.forStatusChangesSubscription = this._for.statusChanges.subscribe(() => this.handleControlStatusChange(this._for));
       this.handleControlStatusChange(this._for);
     }
   }
@@ -141,6 +140,12 @@ export class ValMessagesComponent implements OnInit, AfterContentInit, OnDestroy
   private showMessageComponents(components: ValMessageComponent[]) {
     for (let i = 0; i < components.length && (i < 1 || this._isMultiple); i++) {
       components[i].show = true;
+    }
+  }
+
+  private unsubscribeFromControlStatusChanges() {
+    if (this.forStatusChangesSubscription) {
+      this.forStatusChangesSubscription.unsubscribe();
     }
   }
 }
