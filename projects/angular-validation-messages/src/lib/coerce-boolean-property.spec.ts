@@ -1,4 +1,4 @@
-import { coerceBooleanProperty } from "./coerce-boolean-property";
+import { coerceBooleanProperty } from './coerce-boolean-property';
 
 describe('coerceBooleanProperty', () => {
   describe('returns false', () => {
