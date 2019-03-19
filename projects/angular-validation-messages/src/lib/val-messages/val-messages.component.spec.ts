@@ -8,26 +8,6 @@ import { AngularValidationMessagesModule } from '../angular-validation-messages.
 import { ValMessageComponent } from '../val-message/val-message.component';
 
 describe('ValMessagesComponent', () => {
-  // let component: ValMessagesComponent;
-  // let fixture: ComponentFixture<ValMessagesComponent>;
-
-  // beforeEach(async(() => {
-  //   TestBed.configureTestingModule({
-  //     declarations: [ ValMessagesComponent ]
-  //   })
-  //   .compileComponents();
-  // }));
-
-  // beforeEach(() => {
-  //   fixture = TestBed.createComponent(ValMessagesComponent);
-  //   component = fixture.componentInstance;
-  //   fixture.detectChanges();
-  // });
-
-  // it('should create', () => {
-  //   expect(component).toBeTruthy();
-  // });
-
   describe('when the default display configuration is used', () => {
     @Component({
       template: `
@@ -226,10 +206,6 @@ describe('ValMessagesComponent', () => {
 
     it('has a control passed to it, no exception is thrown', () => {
       expect(() => component.validationMessageComponent.for = component.control).not.toThrowError();
-    });
-
-    it('has another control passed to it, validation is still shown', () => {
-
     });
   });
 
