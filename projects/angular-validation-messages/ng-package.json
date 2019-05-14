@@ -6,5 +6,8 @@
     "umdModuleIds": {
       "angular-validation-support": "angular-validation-support"
     }
-  }
+  },
+  "whitelistedNonPeerDependencies": [
+    "."
+  ]
 }
