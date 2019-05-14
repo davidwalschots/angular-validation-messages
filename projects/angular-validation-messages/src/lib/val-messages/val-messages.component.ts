@@ -1,4 +1,5 @@
-import { Component, OnInit, Input, Optional, Inject, OnDestroy, AfterContentInit, ContentChildren, QueryList, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, Input, Optional, Inject, OnDestroy, 
+  AfterContentInit, ContentChildren, QueryList, ViewEncapsulation } from '@angular/core';
 import { FormControl, ControlContainer } from '@angular/forms';
 import { AngularValidationMessagesModuleConfigurationToken } from '../angular-validation-messages-module-configuration-token';
 import { AngularValidationMessagesModuleConfiguration } from '../angular-validation-messages-module-configuration';
@@ -85,6 +86,10 @@ export class ValMessagesComponent implements OnInit, AfterContentInit, OnDestroy
   }
 
   showErrors() {
+    if (!this._for || !this._for.errors) {
+      return false;
+    }
+
     if (this._displayWhen !== undefined) {
       return this._displayWhen;
     }
